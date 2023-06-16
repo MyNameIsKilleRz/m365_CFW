@@ -6,7 +6,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-
+// todo use MCSDK to control the bldc(foc) motor... And that's final
 #include "FreeRTOS.h"
 #include "task.h"
 
@@ -20,6 +20,7 @@ void handleButton(){
 
 void handleFWupd(){
     //check if firmware update is needed
+    //later add fw ver. spoofing
 }
 
 void handleLocking(){
