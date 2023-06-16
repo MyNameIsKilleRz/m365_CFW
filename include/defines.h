@@ -1,31 +1,39 @@
-//Definitions for TM1637 segments
+// Definitions for TM1637 segments
+#define TM1637_MODE_ECO          2   // 'Walk mode'
+#define TM1637_MODE_DRIVE        1
+#define TM1637_MODE_SPORT        4
+#define TM1637_MODE_CHARGING     8
+#define TM1637_MODE_OFF          16
+#define TM1637_MODE_LOCK         32
+#define TM1637_MODE
+#define TM1637_OVERHEATING  128 // Add to eco, drive, sport, lock to display temp icon
+#define TM1637_LIGHT                  // Self-explanatory
+#define TM1637_TEMP                   // BLE doesn't need to know temp, only if overheating or not
+#define TM1637_ERR_CODE               // More info here: https://wiki.scooterhacking.org/doku.php?id=nberrorcodes
+#define TM1637_BATT
+#define TM1637_THROTTLE_VAL
+#define TM1637_BRAKE_VAL
 
-#define TM1637_ECO 
-#define TM1637_DRIVE
-#define TM1637_SPORT
-#define TM1637_LIGHT
-#define TM1637_BT
-#define TM1637_TEMP
-#define TM1637_ERR
-#define TM1637_BAT100
-#define TM1637_BAT80
-#define TM1637_BAT60
-#define TM1637_BAT40
-#define TM1637_BAT20
-#define TM1637_KMH
-#define TM1637_MPH
+// Definitions for GPIO
+#define TM1637_BAUDRATE     115200  // Half-duplex
+#define TM1637_RX_PIN
+#define TM1637_TX_PIN       // TODO Later
+//#define TM1637_CLK        NRF_GPIO_PIN_MAP(PORT,PIN) // Not used
+//#define TM1637_DIO        NRF_GPIO_PIN_MAP(PORT,PIN) // Not used
+//#define UART_PARITY                  // Unused placeholder
+//#define UART_FLOWCONTROL             // Unused placeholder
+//#define BRAKE_PIN         NRF_GPIO_PIN_MAP(PORT,PIN) // Handled by BLE
+//#define ACCELERATOR_PIN   NRF_GPIO_PIN_MAP(PORT,PIN) // Handled by BLE
+//#define BUTTON_PIN        NRF_GPIO_PIN_MAP(PORT,PIN) // Handled by BLE
 
-//Definitions for GPIO
+// Definitions for esc
+#define ESC_POWER_MODE
+#define ESC_ERRORCODE
+#define ESC_BEEP
+#define ESC_MOTOR_SPEED
+#define ESC_OVERHEATING
+#define ESC_TEMP
+#define ESC_OVERHEATING_TEMP 60
 
-#define TM1637_DIO  NRF_GPIO_PIN_MAP(PORT,PIN)
-#define TM1637_CLK  NRF_GPIO_PIN_MAP(PORT,PIN)
-//There are 3 pins connected to both ports. Weird. P0.25, P0.04 and P0.05
 
-#define UART_PIN_RX NRF_GPIO_PIN_MAP(PORT,PIN)
-#define UART_PIN_TX NRF_GPIO_PIN_MAP(PORT,PIN)
-#define UART_PARITY
-#define UART_FLOWCONTROL
-
-#define BRAKE_PIN   NRF_GPIO_PIN_MAP(PORT,PIN)
-#define ACCELLERATOR_PIN    NRF_GPIO_PIN_MAP(PORT,PIN)
-#define BUTTON_PIN  NRF_GPIO_PIN_MAP(PORT,PIN)
+#define BMS_CHARGING
