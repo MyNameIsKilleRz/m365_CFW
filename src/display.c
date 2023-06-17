@@ -9,7 +9,7 @@ void TM1637_Init() {
     //nrf_gpio_cfg_pin_input(TM1637_DIO, NRF_GPIO_PIN_PULLDOWN);
     //nrf_gpio_cfg_pin_input(TM1637_CLK, NRF_GPIO_PIN_PULLDOWN);
 }
-void TM1637_Change_Power_Mode(int Mode,bool Force) {
+void TM1637_Change_Speed_Mode(int Mode,bool Force) {
     if (Force == false, BMS_CHARGING == 1){
         TM1637_MODE = TM1637_MODE_CHARGING
     }
@@ -17,27 +17,46 @@ void TM1637_Change_Power_Mode(int Mode,bool Force) {
     {
         if (Mode == 1) {
             // ECO
-            TM1637_MODE = TM1637_MODE_ECO 
+            TM1637_MODE = TM1637_SPEEDMODE_ECO 
         }
         else if (Mode == 2)
         {
             // Drive
-            TM1637_MODE = TM1637_MODE_DRIVE
+            TM1637_MODE = TM1637_SPEEDMODE_DRIVE
         }
         else if (Mode == 3)
         {
             //Sport
-            TM1637_MODE = TM1637_MODE_SPORT
+            TM1637_MODE = TM1637_SPEEDMODE_SPORT
         }
     }
     TM1637_update()
+    return 0
+}
+
+void TM1637_readThrottleAndBrakeVal(){
+    if (TM1637_MODE == 16) //check if TM1637 is off
+    {
+        TM1637_THROTTLE_VAL = 0;
+        TM1637_BRAKE_VAL = 0;
+    }
+    else
+    {   
+        TM1637_THROTTLE_IN = 0; //todo read uart bytes. 
+        TM1637_THROTTLE_VAL = (TM1637_THROTTLE_IN - TM1637_THROTTLE_CALIBRATION_LOW) / TM1637_THROTTLE_CALIBRATION_HIGH;
+        TM1637_BRAKE_IN = 0; //todo read uart bytes. 
+        TM1637_BRAKE_VAL = (TM1637_BRAKE_IN - TM1637_BRAKE_CALIBRATION_LOW) / TM1637_BRAKE_CALIBRATION_HIGH;
+    }
+    return 0;
+    
 }
 
 void TM1637_update(){
     pkt = BuildPacket(ESC_POWER_MODE,TM1637_LIGHT,ESC_ERRORCODE,ESC_BEEP,ESC_MOTOR_SPEED,ESC_OVERHEATING)
-   
+    //todo send uart bytes
+    return 0;
 }
-uint16_t* BuildPacket(int Mode, int light, int errorcode, int beep, float speed, bool overheating)
+uint16_t* BuildPacket(int SpeedMode, bool light,bool charging,bool off,bool locked, int errorcode, bool beep, float speed, bool overheating)
 {
     // packet 0x64
     // mode explanation 1=drive, 2=eco, 4=sport, 8=charge, 16=off, 32=lock, mode+128=overheating symbol
@@ -48,6 +67,7 @@ uint16_t* BuildPacket(int Mode, int light, int errorcode, int beep, float speed,
     {
         SMode = Mode + 128;
     }
+    
     packet[0] = 0x55AA;
     packet[2] = 0x0821;
     packet[4] = 0x6400;
@@ -68,23 +88,34 @@ uint16_t* BuildPacket(int Mode, int light, int errorcode, int beep, float speed,
     return packet;
 }
 
-void TM1637_clearScreen(){
+
+
+//void TM1637_setBrightness(int brightness){ //Would require custom ble firmware...
+//
+//} 
+
+//void TM1637_setSegments(const int segments[]){
+//    
+//}
+
+//void TM1637_showNumber(int number){
+//
+//}
+void TM1637_ButtonHandler(){
+    if (TM1637_BUTTON_PRESSED == true){
+        if (TM1637_OFF == true){
+            TM1637_OFF = false
+            TM1637_LOCKED = false
+            TM1637_update
+        }
+        else if (TM1637_BUTTON_PRESSCOUNTER == 2){
+            /* code */
+        }
+        
+    }
 
 }
-
-void TM1637_setBrightness(int brightness){
-
-}
-
-void TM1637_setSegments(const int segments[]){
-    
-}
-
-void TM1637_showNumber(int number){
-
-}
-
-void TM1637_on(){
+void TM1637_TurnOn(){
     if (STARTUP_MODE == 4) {
         TM1637_MODE = ESC_POWER_MODE
     }
