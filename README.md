@@ -1,7 +1,7 @@
 # m365_CFW / WIP NOT DONE
 
 This is an attempt to reverse engineer and recreate the Xiaomi M365 Pro firmware.
-Note: Currently, the Firmware is not working because i just started to developing it :C
+Note: Currently, the Firmware is not working because i just started developing it :C
 ## Prerequisites
 
 Before building this custom firmware, make sure you have the following:
