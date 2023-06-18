@@ -1,18 +1,29 @@
 // Definitions for TM1637 segments
-#define TM1637_MODE_ECO          2   // 'Walk mode'
-#define TM1637_MODE_DRIVE        1
-#define TM1637_MODE_SPORT        4
+#define TM1637_SPEEDMODE_ECO          2   // 'Walk mode'
+#define TM1637_SPEEDMODE_DRIVE        1
+#define TM1637_SPEEDMODE_SPORT        4
 #define TM1637_MODE_CHARGING     8
 #define TM1637_MODE_OFF          16
 #define TM1637_MODE_LOCK         32
 #define TM1637_MODE
 #define TM1637_OVERHEATING  128 // Add to eco, drive, sport, lock to display temp icon
+#define TM1637_OFF 
+#define TM1637_LOCKED
 #define TM1637_LIGHT                  // Self-explanatory
 #define TM1637_TEMP                   // BLE doesn't need to know temp, only if overheating or not
 #define TM1637_ERR_CODE               // More info here: https://wiki.scooterhacking.org/doku.php?id=nberrorcodes
 #define TM1637_BATT
 #define TM1637_THROTTLE_VAL
+#define TM1637_THROTTLE_IN //Raw throttle val 
+#define TM1637_THROTTLE_CALIBRATION_LOW  40  //
+#define TM1637_THROTTLE_CALIBRATION_HIGH 170 //Maybe i'll move this to user_config 
 #define TM1637_BRAKE_VAL
+#define TM1637_BRAKE_IN //Raw brake val
+#define TM1637_BRAKE_CALIBRATION_LOW 40  //
+#define TM1637_BRAKE_CALIBRATION_HIGH 180 //Maybe i'll move this to user_config 
+#define TM1637_BUTTON_PRESSED
+#define TM1637_BUTTON_PRESSCOUNTER
+
 
 // Definitions for GPIO
 #define TM1637_BAUDRATE     115200  // Half-duplex
