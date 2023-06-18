@@ -2,6 +2,8 @@
 #include <nrf_gpio.h>
 // without bms comunication the amper limit is set to 19
 
-void bq769(){
+void bq769_init(){
     //todo
 }
+
+

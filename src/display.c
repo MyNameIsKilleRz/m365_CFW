@@ -106,12 +106,33 @@ void TM1637_ButtonHandler(){
         if (TM1637_OFF == true){
             TM1637_OFF = false
             TM1637_LOCKED = false
-            TM1637_update
+            TM1637_update()
+
         }
-        else if (TM1637_BUTTON_PRESSCOUNTER == 2){
-            /* code */
+        else if (TM1637_OFF == false)
+        {
+            if (TM1637_BUTTON_PRESSCOUNTER == 1){
+                //Turrn on light
+                TM1637_LIGHT = true
+            }
+            elif (TM1637_BUTTON_PRESSCOUNTER == 2){
+                // Change mode
+                if (TM1637_MODE == TM1637_MODE_ECO)
+                {
+                    TM1637_MODE = TM1637_MODE_DRIVE
+                }
+                elif (TM1637_MODE == TM1637_MODE_DRIVE)
+                {
+                    TM1637_MODE = TM1637_MODE_SPORT
+                }
+                elif (TM1637_MODE == TM1637_MODE_SPORT)
+                {
+                    TM1637_MODE = TM1637_MODE_ECO
+                }
+                TM1637_update()
+            }
         }
-        
+          
     }
 
 }
