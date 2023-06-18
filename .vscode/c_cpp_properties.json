@@ -1,8 +1,11 @@
 {
     "env": {
-        "myDefaultIncludePath": ["${workspaceFolder}", "${workspaceFolder}/include", "C:/ProgramData/chocolatey/lib/nrf-sdk/tools/nRF5_SDK_15.3.0_59ac345/modules/nrfx/hal"]
-        
-      },
+        "myDefaultIncludePath": [
+            "${workspaceFolder}",
+            "${workspaceFolder}/include",
+            "C:/ProgramData/chocolatey/lib/nrf-sdk/tools/nRF5_SDK_15.3.0_59ac345/modules/nrfx/hal"
+        ]
+    },
     "configurations": [
         {
             "name": "Win32",
@@ -22,7 +25,8 @@
                     "${workspaceFolder}",
                     "C:/ProgramData/chocolatey/lib/nrf-sdk/tools/nRF5_SDK_15.3.0_59ac345/modules/nrfx/hal"
                 ]
-            }
+            },
+            "configurationProvider": "ms-vscode.makefile-tools"
         }
     ],
     "version": 4
