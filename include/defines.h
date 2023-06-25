@@ -6,7 +6,7 @@
 #define TM1637_MODE_OFF          16
 #define TM1637_MODE_LOCK         32
 #define TM1637_MODE
-#define TM1637_OVERHEATING  128 // Add to eco, drive, sport, lock to display temp icon
+#define TM1637_MODE_OVERHEATING       128 // Add to eco, drive, sport, lock to display temp icon
 #define TM1637_OFF 
 #define TM1637_LOCKED
 #define TM1637_LIGHT                  // Self-explanatory
@@ -14,6 +14,7 @@
 #define TM1637_ERR_CODE               // More info here: https://wiki.scooterhacking.org/doku.php?id=nberrorcodes
 #define TM1637_BATT
 #define TM1637_DISSABLE_CHARGING_MODE
+#define TM1637_BEEP             false
 #define TM1637_THROTTLE_VAL
 #define TM1637_THROTTLE_IN //Raw throttle val 
 #define TM1637_THROTTLE_CALIBRATION_LOW  40  //
@@ -25,17 +26,40 @@
 #define TM1637_BUTTON_PRESSED
 #define TM1637_BUTTON_PRESSCOUNTER
 
+#define TM1637_BAUDRATE         115200  // Half-duplex
+#define TM1637_RX_PIN
+#define TM1637_TX_PIN       // TODO Later
+//#define TM1637_CLK        NRF_GPIO_PIN_MAP(PORT,PIN) // Not used
+//#define TM1637_DIO        NRF_GPIO_PIN_MAP(PORT,PIN) // Not used
+//#define UART_PARITY                  // Unused placeholder
+//#define UART_FLOWCONTROL             // Unused placeholder
+//#define BRAKE_PIN         NRF_GPIO_PIN_MAP(PORT,PIN) // Handled by BLE
+//#define ACCELERATOR_PIN   NRF_GPIO_PIN_MAP(PORT,PIN) // Handled by BLE
+//#define BUTTON_PIN        NRF_GPIO_PIN_MAP(PORT,PIN) // Handled by BLE
+
+// Definitions for esc
+#define ESC_POWER_MODE
+#define ESC_ERRORCODE
+#define ESC_BEEP
+#define ESC_MOTOR_SPEED
+#define ESC_OVERHEATING
+#define ESC_TEMP
+#define ESC_OVERHEATING_TEMP    60
+
+
+#define BMS_CHARGING
+
 
 // Definitions for GPIO, thanks to https://github.com/Koxx3/SmartESC_STM32_v2/blob/vesc_comp/m365/Inc/main.h
-#define PWR_BTN_Pin GPIO_PIN_14
-#define PWR_BTN_GPIO_Port GPIOC
+#define PWR_BTN_Pin GPIO_PIN_14 //BLE
+#define PWR_BTN_GPIO_Port GPIOC //BLE
 #define TPS_ENA_Pin GPIO_PIN_15
 #define TPS_ENA_GPIO_Port GPIOC
-#define LED_Pin GPIO_PIN_1
+#define LED_Pin GPIO_PIN_1 
 #define LED_GPIO_Port GPIOD
-#define M1_TEMPERATURE_Pin GPIO_PIN_0
-#define M1_TEMPERATURE_GPIO_Port GPIOA
-#define M1_BUS_VOLTAGE_Pin GPIO_PIN_2
+#define M1_TEMPERATURE_Pin GPIO_PIN_0 //ESC
+#define M1_TEMPERATURE_GPIO_Port GPIOA //ESC
+#define M1_BUS_VOLTAGE_Pin GPIO_PIN_2 
 #define M1_BUS_VOLTAGE_GPIO_Port GPIOA
 #define M1_CURR_AMPL_U_Pin GPIO_PIN_3
 #define M1_CURR_AMPL_U_GPIO_Port GPIOA
@@ -43,15 +67,15 @@
 #define M1_CURR_AMPL_V_GPIO_Port GPIOA
 #define M1_CURR_AMPL_W_Pin GPIO_PIN_5
 #define M1_CURR_AMPL_W_GPIO_Port GPIOA
-#define PHASE_A_V_Pin GPIO_PIN_6
-#define PHASE_A_V_GPIO_Port GPIOA
-#define PHASE_B_V_Pin GPIO_PIN_7
-#define PHASE_B_V_GPIO_Port GPIOA
-#define M1_HALL_H3_Pin GPIO_PIN_0
-#define M1_HALL_H3_GPIO_Port GPIOB
-#define PHASE_C_V_Pin GPIO_PIN_1
-#define PHASE_C_V_GPIO_Port GPIOB
-#define UART_TX_Pin GPIO_PIN_10
+#define PHASE_A_V_Pin GPIO_PIN_6 //ESC
+#define PHASE_A_V_GPIO_Port GPIOA //ESC
+#define PHASE_B_V_Pin GPIO_PIN_7 //ESC
+#define PHASE_B_V_GPIO_Port GPIOA //ESC
+#define M1_HALL_H3_Pin GPIO_PIN_0 //ESC 
+#define M1_HALL_H3_GPIO_Port GPIOB //ESC
+#define PHASE_C_V_Pin GPIO_PIN_1 //ESC
+#define PHASE_C_V_GPIO_Port GPIOB //ESC
+#define UART_TX_Pin GPIO_PIN_10 //ESC
 #define UART_TX_GPIO_Port GPIOB
 #define UART_RX_Pin GPIO_PIN_11
 #define UART_RX_GPIO_Port GPIOB
@@ -73,27 +97,3 @@
 #define M1_HALL_H1_GPIO_Port GPIOB
 #define M1_HALL_H2_Pin GPIO_PIN_5
 #define M1_HALL_H2_GPIO_Port GPIOB
-// gpio
-
-#define TM1637_BAUDRATE     115200  // Half-duplex
-#define TM1637_RX_PIN
-#define TM1637_TX_PIN       // TODO Later
-//#define TM1637_CLK        NRF_GPIO_PIN_MAP(PORT,PIN) // Not used
-//#define TM1637_DIO        NRF_GPIO_PIN_MAP(PORT,PIN) // Not used
-//#define UART_PARITY                  // Unused placeholder
-//#define UART_FLOWCONTROL             // Unused placeholder
-//#define BRAKE_PIN         NRF_GPIO_PIN_MAP(PORT,PIN) // Handled by BLE
-//#define ACCELERATOR_PIN   NRF_GPIO_PIN_MAP(PORT,PIN) // Handled by BLE
-//#define BUTTON_PIN        NRF_GPIO_PIN_MAP(PORT,PIN) // Handled by BLE
-
-// Definitions for esc
-#define ESC_POWER_MODE
-#define ESC_ERRORCODE
-#define ESC_BEEP
-#define ESC_MOTOR_SPEED
-#define ESC_OVERHEATING
-#define ESC_TEMP
-#define ESC_OVERHEATING_TEMP 60
-
-
-#define BMS_CHARGING

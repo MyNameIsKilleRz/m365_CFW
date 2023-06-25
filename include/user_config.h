@@ -19,7 +19,7 @@
 #define KERS_MINIMUM_SPEED 10.0   // km/h
 #define KERSINTENSITY 1
 
-//Max speed
+//Max speed -1 == Unlimited
 #define MAXSPEED_SPORT 28.0       // km/h
 #define MAXSPEED_DRIVE 22.0       // km/h
 #define MAXSPEED_ECO 22.0         // km/h
@@ -46,5 +46,5 @@
 #define DISABLE_CHARGING_MODE false
 
 #define MOTOR_POWER_CONSTANT 51575 // I have no clue how to implement this so i'll probable deprecate this
-#define STARTUP_MODE = 3 // 1=ECO, 2=DRIVE,3=SPORT,4=PREVIOUS  mode which is chosen when you turn on dahsboard
+#define STARTUP_MODE = 3 // 1=ECO, 2=DRIVE,3=SPORT,4=PREVIOUS  {mode which is chosen when you turn on dahsboard)
 #define HOLD_TO_SHUTDOWN_IN_SECONDS 3

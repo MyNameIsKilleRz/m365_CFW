@@ -40,30 +40,38 @@ void TM1637_readThrottleAndBrakeVal() {
 }
 
 void TM1637_update(){
-    pkt = BuildPacket(ESC_POWER_MODE,TM1637_LIGHT,ESC_ERRORCODE,ESC_BEEP,ESC_MOTOR_SPEED,ESC_OVERHEATING)
+    pkt = BuildPacket(TM1637_MODE,TM1637_LIGHT,ESC_ERRORCODE,TM1637_BEEP,ESC_MOTOR_SPEED,ESC_OVERHEATING)
     //todo send uart bytes
     return 0;
 }
-uint16_t* BuildPacket(int SpeedMode, bool light, bool charging, bool off, bool locked, int errorcode, bool beep, float speed, bool overheating) {
+uint16_t* BuildPacket(int SpeedMode) {
     // Packet 0x64
-    // Mode explanation: 1=drive, 2=eco, 4=sport, 8=charge, 16=off, 32=lock, mode+128=overheating symbol
+    // Building packet for ble (com)
+    // Mode explanation: 1=drive, 2=eco, 4=sport, 8=charge, 16=off, 32=lock, 128=overheating symbol
     uint16_t packet[14];
     uint16_t crc = 0;
-    int SMode = SpeedMode;
-    if (overheating == true) {
-        SMode = SpeedMode + 128;
-    }
-
     packet[0] = 0x55AA;
     packet[2] = 0x0821;
     packet[4] = 0x6400;
-    packet[6] = SMode;
+    if (TM1637_OFF == true) {
+        packet[6] = TM1637_MODE_OFF;
+        if (TM1637_LOCKED == true) {
+            packet[6] = TM1637_MODE_LOCK); // lock display
+        } else {
+            if (get_esc_temp() <= 60) { // temp icon will show up above 60 degree
+                packet[6] = SpeedMode;
+            } else {
+                packet[6] = speedmode + TM1637_MODE_OVERHEATING; // Add's TM1637_MODE_OVERHEATING to speed mode (eco,drive,sport) to turn on the overheating symbol 
+           }
+        }
+    }
     // packet[7] = // Todo: Battery
-    packet[8] = light;
-    packet[9] = beep;
-    packet[10] = static_cast<uint16_t>(speed * 3.6); // Convert float to uint16_t
-    packet[11] = errorcode;
+    packet[8] = TM1637_LIGHT;
+    packet[9] = TM1637_BEEP;
+    packet[10] = static_cast<uint16_t>(ESC_MOTOR_SPEED * 3.6); // Convert float to uint16_t
+    packet[11] = ESC_ERRORCODE;
     // Calculating crc
+    // Proudly wirtten by ChatGPT 
     crc = 0;
     for (int i = 2; i <= 11; i++) { // Decreased the range to calculate the crc
         crc += packet[i];
