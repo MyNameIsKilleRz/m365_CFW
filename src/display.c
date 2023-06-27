@@ -1,8 +1,8 @@
 #include <include/defines.h>
 #include <include/user_config.h>
 #include <stdint.h>
-#include <nrf_gpio.h>
 
+#include <stdbool.h>
 
 void TM1637_Init() {
     
@@ -44,40 +44,85 @@ void TM1637_update(){
     //todo send uart bytes
     return 0;
 }
-uint16_t* BuildPacket(int SpeedMode) {
-    // Packet 0x64
-    // Building packet for ble (com)
+
+int convertBoolToInt(bool value) {
+    return value ? 1 : 0;
+}
+
+uint16_t* BuildX1Packet(int SpeedMode) {
+    // Packet type 0x64
+    // Sources: https://github.com/m365fw/vesc_m365_dash/blob/main/m365_dash.lisp
+    //          https://github.com/camcamfresh/Xiaomi-M365-BLE-Controller-Replacement/tree/master
+    // Speed modes can only be: 1=drive, 2=eco, 4=sport (others(off,lock,charge...) are handled differently) 
     // Mode explanation: 1=drive, 2=eco, 4=sport, 8=charge, 16=off, 32=lock, 128=overheating symbol
     uint16_t packet[14];
+    // uint16_t* packet = malloc(sizeof(uint16_t) * 14);
     uint16_t crc = 0;
-    packet[0] = 0x55AA;
-    packet[2] = 0x0821;
-    packet[4] = 0x6400;
-    if (TM1637_OFF == true) {
-        packet[6] = TM1637_MODE_OFF;
-        if (TM1637_LOCKED == true) {
-            packet[6] = TM1637_MODE_LOCK); // lock display
-        } else {
-            if (get_esc_temp() <= 60) { // temp icon will show up above 60 degree
+    packet[0] = 0x55; //fixed header
+    packet[1] = 0xAA; //fixed header
+    packet[2] = 0x08; //msg length (TODO)
+    packet[3] = 0x21; //message destination: ,0x20 = BLE to motor controller ,0x21 = motor controller to BLE ,0x22 BLE to BMS ,0x23 motor controller to BLE ,0x25 BMS to motor controller
+    packet[4] = 0x64; //message type: 0x01 = Read, and 0x03 = Write (Some messages use 0x64 & 0x65).
+    packet[5] = 0x00; //command type
+    /*
+    The X1 Structure: (source:https://github.com/camcamfresh/Xiaomi-M365-BLE-Controller-Replacement/tree/master)
+    (Bit outdated but still works)
+        Request: | 0x55 | 0xAA | 0x9 | 0x20 | 0x64 | L | 0x4 | T | B | S | ck0 | ck1 |
+            L is the number of LED's the original controller should turn on.
+            T is the throttle value.
+            B is the brake value.
+            S is the beep confirmation value.
+        Response: | 0x55 | 0xAA | 0x06 | 0x21 | 0x64 | 0 | D | L | N | B | ck0 | ck1 |
+            D is the drive mode: (this part is outdated)
+                0x0 = Eco Disabled, Wheel Stationary
+                0x01 = Eco Disabled, Wheel Moving
+                0x02 = Eco Enabled, Wheel Stationary
+                0x03 = Eco Enabled, Wheel Moving
+            L is the amount of LED's that should be lit on the BLE dashboard.
+            A value of 0 may indicate an error state.(i think this is also outdated)
+            N is the night mode:
+                0x0 = off
+                0x64 = on
+            B is the beep reqeuest (expects beep confirmation).
+    */
+    if (TM1637_OFF == false){
+        if (TM1637_LOCKED == false){
+            if (get_esc_temp() >= 60){ // temp icon will show up above 60 degree
+                packet[6] = SpeedMode + TM1637_MODE_OVERHEATING; // Add's TM1637_MODE_OVERHEATING to speed mode (eco,drive,sport) to turn on the overheating symbol 
+            }else{
                 packet[6] = SpeedMode;
-            } else {
-                packet[6] = speedmode + TM1637_MODE_OVERHEATING; // Add's TM1637_MODE_OVERHEATING to speed mode (eco,drive,sport) to turn on the overheating symbol 
-           }
+            }
+        }else{
+            packet[6] = convertBoolToInt(TM1637_MODE_LOCK); // lock display
+        }
+    }else{
+        packet[6] = convertBoolToInt(TM1637_MODE_OFF);
+    }
+
+    if (TM1637_OFF == false && TM1637_LOCKED == false){
+        if (TM1637_SHOW_CUSTOM_BATT == true && TM1637_SHOW_CUSTOM_BATT_ENABLED == true){
+            packet[7] = TM1637_SHOW_CUSTOM_NUM;
+        }else{
+            packet[7] = ESC_MOTOR_SPEED * 3.6;
         }
     }
-    // packet[7] = // Todo: Battery
-    packet[8] = TM1637_LIGHT;
-    packet[9] = TM1637_BEEP;
-    packet[10] = static_cast<uint16_t>(ESC_MOTOR_SPEED * 3.6); // Convert float to uint16_t
+    packet[8] = convertBoolToInt(TM1637_LIGHT);
+    packet[9] = convertBoolToInt(TM1637_BEEP); 
+    if (TM1637_OFF == false && TM1637_LOCKED == false){
+        if (TM1637_SHOW_CUSTOM_NUM == true && TM1637_SHOW_CUSTOM_NUM_ENABLED == true){
+            packet[10] = TM1637_SHOW_CUSTOM_NUM;
+        }else{
+            packet[10] = ESC_MOTOR_SPEED * 3.6; // Convert float to uint16_t
+        }
+    }
     packet[11] = ESC_ERRORCODE;
     // Calculating crc
-    // Proudly wirtten by ChatGPT 
     crc = 0;
     for (int i = 2; i <= 11; i++) { // Decreased the range to calculate the crc
         crc += packet[i];
     }
-    packet[12] = static_cast<uint16_t>(crc ^ 0xFFFF); // Convert result to uint16_t
-    packet[13] = static_cast<uint16_t>((crc ^ 0xFFFF) >> 8); // Convert result to uint16_t
+    packet[12] = crc ^ 0xFFFF; // Convert result to uint16_t ck0 
+    packet[13] = (crc ^ 0xFFFF) >> 8; // Convert result to uint16_t ck1 
     return packet;
 }
 
