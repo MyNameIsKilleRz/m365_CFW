@@ -85,6 +85,7 @@ uint16_t* BuildX1Packet(int SpeedMode) {
                 0x64 = on
             B is the beep reqeuest (expects beep confirmation).
     */
+    
     if (TM1637_OFF == false){
         if (TM1637_LOCKED == false){
             if (get_esc_temp() >= 60){ // temp icon will show up above 60 degree
@@ -101,9 +102,9 @@ uint16_t* BuildX1Packet(int SpeedMode) {
 
     if (TM1637_OFF == false && TM1637_LOCKED == false){
         if (TM1637_SHOW_CUSTOM_BATT == true && TM1637_SHOW_CUSTOM_BATT_ENABLED == true){
-            packet[7] = TM1637_SHOW_CUSTOM_NUM;
+            packet[7] = TM1637_SHOW_CUSTOM_BATT;
         }else{
-            packet[7] = ESC_MOTOR_SPEED * 3.6;
+            packet[7] = BMS_CAPACITY * 3.6;
         }
     }
     packet[8] = convertBoolToInt(TM1637_LIGHT);
