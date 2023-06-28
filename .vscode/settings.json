@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "defines.h": "c"
-    },
-    "editor.pasteAs.enabled": false,
-    "explorer.incrementalNaming": "smart",
-    "ipynb.pasteImagesAsAttachments.enabled": true,
-    "editor.formatOnPaste": false
-}
