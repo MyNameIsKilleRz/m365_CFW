@@ -55,6 +55,43 @@ uint16_t* BuildX1Packet(int SpeedMode) {
     //          https://github.com/camcamfresh/Xiaomi-M365-BLE-Controller-Replacement/tree/master
     // Speed modes can only be: 1=drive, 2=eco, 4=sport (others(off,lock,charge...) are handled differently) 
     // Mode explanation: 1=drive, 2=eco, 4=sport, 8=charge, 16=off, 32=lock, 128=overheating symbol
+    packet[0] = 0x55; //fixed header
+    packet[1] = 0xAA; //fixed header
+    packet[2] = 0x08; //msg length (TODO)
+    packet[3] = 0x21; //message destination: ,0x20 = BLE to motor controller ,0x21 = motor controller to BLE ,0x22 BLE to BMS ,0x23 motor controller to BLE ,0x25 BMS to motor controller
+    packet[4] = 0x64; //message type: 0x01 = Read, and 0x03 = Write (Some messages use 0x64 & 0x65).
+    packet[5] = 0x00; //command type
+    
+    if (TM1637_OFF == false){
+       if (TM1637_LOCKED == false){
+           if (ESC_OVERHEATING == true){ 
+               packet[6] = TM1637_SPEEDMODE + TM1637_MODE_OVERHEATING; // Add's TM1637_MODE_OVERHEATING to speed mode (eco,drive,sport) to turn on the overheating symbol 
+           }else{
+               packet[6] = TM1637_SPEEDMODE;
+           }
+       }else{
+          packet[6] = TM1637_MODE_LOCK; // lock display
+       }
+    }else{
+      packet[6] = TM1637_MODE_OFF;
+    }
+    
+      
+    packet[7] = 100; // battery percentage
+    packet[8] = 0x00;//light 0/1
+    packet[9] = 0x00;//beep 0/1
+    packet[10] = 654;// speed
+    packet[11] = 0;// error code
+    // Calculating crc
+    int c_out = calc_crc(packet);
+    packet[12] = c_out & 0xFF;
+    packet[13] = c_out >> 8;
+
+    // Packet type 0x64
+    // Sources: https://github.com/m365fw/vesc_m365_dash/blob/main/m365_dash.lisp
+    //          https://github.com/camcamfresh/Xiaomi-M365-BLE-Controller-Replacement/tree/master
+    // Speed modes can only be: 1=drive, 2=eco, 4=sport (others(off,lock,charge...) are handled differently) 
+    // Mode explanation: 1=drive, 2=eco, 4=sport, 8=charge, 16=off, 32=lock, 128=overheating symbol
     uint16_t packet[14];
     // uint16_t* packet = malloc(sizeof(uint16_t) * 14);
     uint16_t crc = 0;
@@ -157,6 +194,10 @@ void TM1637_Button_Acction_Handler() {
         }
     }   
 }
+bool TM1637_Button_Pressed_State(){
+    return(TM1637_BUTTON_PRESSED);
+}
+
 void TM1637_TurnOn() {
     if (STARTUP_MODE == 4) {
         TM1637_MODE = ESC_POWER_MODE;

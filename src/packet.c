@@ -13,21 +13,19 @@ uint16_t* Packet(bCmd,) {
     // Mode explanation: 1=drive, 2=eco, 4=sport, 8=charge, 16=off, 32=lock, 128=overheating symbol
     uint16_t packet[14];
     uint16_t crc = 0;
+    bool PRO_DISPLAY
     packet[0] = 0x55; //fixed header
     packet[1] = 0xAA; //fixed header
     
     switch (bCmd)
     ​{
-        case constant1:
+        case 65:
           // statements
           break;
     
-        case constant2:
-          // statements
-          break;
-        .
-        .
-        .
+        case 64:
+          if (PRO_DISPLAY == true)
+          
         default:
           // default statements
     }
